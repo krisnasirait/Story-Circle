@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Story Circle</string>
+    <string name="onboarding_message">Join our community and start sharing your stories today!</string>
+    <string name="btn_get_started">Get Started</string>
 </resources>

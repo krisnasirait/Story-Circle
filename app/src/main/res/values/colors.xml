@@ -8,7 +8,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="deep_lavender_blue">#7C6AF3</color>
-    <color name="picton_blue">#44A5F5</color>
+    <color name="dark_primary_color">#5549f1</color>
+    <color name="light_primary_color">#cbc0f8</color>
+    <color name="primary_color">#7c6af3</color>
+    <color name="text_icons">#FFFFFF</color>
+    <color name="accent_color">#65b5f6</color>
+
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+
+    <color name="divider_color">#BDBDBD</color>
 
 </resources>

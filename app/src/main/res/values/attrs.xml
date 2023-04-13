@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="storyCircleTextColorPrimary" format="color" />
+    <attr name="storyCircleTextColorPrimaryVariant" format="color" />
+    <attr name="storyCircleTextColorSecondary" format="color" />
+</resources>

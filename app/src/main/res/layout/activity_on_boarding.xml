@@ -6,7 +6,47 @@
     android:layout_height="match_parent"
     tools:context=".OnBoardingActivity">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lavOnboard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/tvWelcome"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="43358-social.json"
+        app:lottie_loop="true" />
 
+    <TextView
+        android:id="@+id/tvWelcome"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="@string/onboarding_message"
+        android:textAlignment="center"
+        android:textColor="?attr/storyCircleTextColorPrimary"
+        android:theme="@style/Theme.StoryCircle"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lavOnboard" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_get_started"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/btn_get_started"
+        android:textColor="?attr/storyCircleTextColorPrimaryVariant"
+        android:theme="@style/Theme.StoryCircle"
+        android:background="@drawable/custom_btn_rounded"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvWelcome"/>
+    
 
 </androidx.constraintlayout.widget.ConstraintLayout>

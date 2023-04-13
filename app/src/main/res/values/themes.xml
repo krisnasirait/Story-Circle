@@ -32,6 +32,23 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="CustomTextInputLayout" parent="Widget.Material3.TextInputLayout.FilledBox.Dense">
+        <!-- Customize the box stroke width and color -->
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeColor">@color/primary_text</item>
+
+        <!-- Customize the hint text color -->
+        <item name="hintTextColor">@color/secondary_text</item>
+
+        <!-- Customize the focused color -->
+        <item name="boxBackgroundColor">@color/light_primary_color</item>
+
+        <!-- Customize the error text color -->
+        <item name="errorTextColor">@color/teal_200</item>
+    </style>
+
+
+
     <style name="Theme.StoryCircle.FullScreen" parent="Theme.StoryCircle">
         <item name="android:windowFullscreen">true</item>
         <item name="windowActionBar">false</item>

@@ -1,9 +1,10 @@
-package com.krisna.storycircle
+package com.krisna.storycircle.presentation.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.krisna.storycircle.databinding.ActivityOnBoardingBinding
+import com.krisna.storycircle.presentation.activity.auth.LoginActivity
 
 class OnBoardingActivity : AppCompatActivity() {
 
@@ -14,7 +15,7 @@ class OnBoardingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnGetStarted.setOnClickListener {
-            Intent(this, MainActivity::class.java).also {
+            Intent(this, LoginActivity::class.java).also {
                 startActivity(it)
                 finish()
             }

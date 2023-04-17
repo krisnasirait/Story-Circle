@@ -25,11 +25,11 @@ class StoryCircleApp : Application() {
         }
     }
 
-    val authModule = module {
+    private val authModule = module {
         viewModel { AuthViewModel(get()) }
     }
 
-    val repositoryModule = module {
+    private val repositoryModule = module {
         single {
             val client = OkHttpClient.Builder()
                 .apply {

@@ -1,10 +1,13 @@
 package com.krisna.storycircle.presentation.viewmodel
 
-import androidx.lifecycle.*
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.krisna.storycircle.data.model.response.RegisterResponse
 import com.krisna.storycircle.data.repository.StoryCircleRepository
 import kotlinx.coroutines.launch
-import org.koin.mp.KoinPlatform.getKoin
 
 class AuthViewModel(
     private val storyCircleRepository: StoryCircleRepository
@@ -24,19 +27,15 @@ class AuthViewModel(
             runCatching {
                 _isLoading.value = true
                 storyCircleRepository.registerUser(name, email, password)
-            }.onSuccess {
+            }.onSuccess { response ->
                 _isLoading.value = false
-                _registerUser.value = it
-            }.onFailure {
+                _registerUser.value = response
+                Log.d("registerUserMessage : ", response.message)
+            }.onFailure { error ->
                 _isLoading.value = false
-                _errorMessage.value = it.message
+                _errorMessage.value = error.message
+                Log.d("registerUserMessage : ", error.message!!)
             }
-        }
-    }
-
-    companion object {
-        fun createViewModel(viewModelStoreOwner: ViewModelStoreOwner): AuthViewModel {
-            return ViewModelProvider(viewModelStoreOwner, getKoin().get())[AuthViewModel::class.java]
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.krisna.storycircle.presentation.activity.auth
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.krisna.storycircle.databinding.ActivityRegisterBinding
 import com.krisna.storycircle.presentation.viewmodel.AuthViewModel
@@ -16,12 +18,26 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnRegister.setOnClickListener {
-            authViewModel.registerUser(
-                binding.textInputName.text.toString(),
-                binding.textInputEmail.text.toString(),
-                binding.textInputPassword.text.toString()
-            )
+        binding.customEditText.setOnRegisterClickListener {
+            val name = binding.customEditText.getName()
+            val email = binding.customEditText.getEmail()
+            val password = binding.customEditText.getPassword()
+
+            authViewModel.registerUser(name, email, password)
+
+            authViewModel.registerUser.observe(this) {
+                if (it?.error  == false) {
+                    startActivity(Intent(this, LoginActivity::class.java))
+                } else {
+                    Toast.makeText(this, it?.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+
+        authViewModel.isLoading.observe(this) {
+            binding.lottieLoading.visibility =
+                if (it) android.view.View.VISIBLE else android.view.View.GONE
         }
     }
 }

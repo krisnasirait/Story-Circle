@@ -11,4 +11,6 @@
     <string name="register">Register</string>
     <string name="register_description">Ready to dive in story circle?</string>
     <string name="alreadyhaveacc_description">Already have an account?</string>
+    <string name="name">Name</string>
+    <string name="required">* Required</string>
 </resources>

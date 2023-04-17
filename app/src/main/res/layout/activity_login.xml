@@ -82,7 +82,7 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="50dp"
-        android:background="@drawable/custom_btn_rounded"
+        android:background="@drawable/custom_btn_rounded_enabled"
         android:text="@string/login_title"
         android:textAllCaps="false"
         android:textColor="@color/white"

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.krisna.storycircle.databinding.ActivityOnBoardingBinding
-import com.krisna.storycircle.presentation.activity.auth.LoginActivity
 
 class OnBoardingActivity : AppCompatActivity() {
 

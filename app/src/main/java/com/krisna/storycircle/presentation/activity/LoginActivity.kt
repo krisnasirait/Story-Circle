@@ -1,5 +1,6 @@
-package com.krisna.storycircle.presentation.activity.auth
+package com.krisna.storycircle.presentation.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -7,7 +8,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.krisna.storycircle.data.model.request.LoginUserRequestBody
 import com.krisna.storycircle.databinding.ActivityLoginBinding
-import com.krisna.storycircle.presentation.activity.MainActivity
 import com.krisna.storycircle.presentation.viewmodel.AuthViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -31,7 +31,6 @@ class LoginActivity : AppCompatActivity() {
 
             authViewModel.loginUser(LoginUserRequestBody(email, password))
         }
-
         setupObservers()
     }
 
@@ -42,13 +41,22 @@ class LoginActivity : AppCompatActivity() {
 
         authViewModel.loginUser.observe(this) { loginUser ->
             loginUser?.let {
+                saveCredentials(binding.customLogin.getEmail(), binding.customLogin.getPassword())
                 showLoginSuccess()
             }
         }
 
         authViewModel.isLoading.observe(this) { isLoading ->
-            binding.lottieLoading.visibility =
-                if (isLoading) View.VISIBLE else View.GONE
+            binding.lottieLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun saveCredentials(email: String, password: String) {
+        val sharedPref = getSharedPreferences("credentials", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString("email", email)
+            putString("password", password)
+            apply()
         }
     }
 

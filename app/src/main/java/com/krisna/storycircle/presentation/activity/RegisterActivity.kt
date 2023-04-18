@@ -1,4 +1,4 @@
-package com.krisna.storycircle.presentation.activity.auth
+package com.krisna.storycircle.presentation.activity
 
 import android.content.Intent
 import android.os.Bundle

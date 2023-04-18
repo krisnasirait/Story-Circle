@@ -1,4 +1,4 @@
-package com.krisna.storycircle.fragment
+package com.krisna.storycircle.presentation.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

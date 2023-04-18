@@ -1,4 +1,4 @@
-package com.krisna.storycircle
+package com.krisna.storycircle.presentation.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent

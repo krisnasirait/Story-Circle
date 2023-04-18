@@ -13,4 +13,6 @@
     <string name="alreadyhaveacc_description">Already have an account?</string>
     <string name="name">Name</string>
     <string name="required">* Required</string>
+    <string name="account">Account</string>
+    <string name="log_out">Log Out</string>
 </resources>

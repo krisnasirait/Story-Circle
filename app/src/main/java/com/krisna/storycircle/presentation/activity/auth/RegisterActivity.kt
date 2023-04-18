@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.krisna.storycircle.data.model.request.RegisterRequestBody
 import com.krisna.storycircle.databinding.ActivityRegisterBinding
 import com.krisna.storycircle.presentation.viewmodel.AuthViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -23,14 +24,18 @@ class RegisterActivity : AppCompatActivity() {
             val email = binding.customEditText.getEmail()
             val password = binding.customEditText.getPassword()
 
-            authViewModel.registerUser(name, email, password)
+            authViewModel.registerUser(RegisterRequestBody(name, email, password))
+        }
 
-            authViewModel.registerUser.observe(this) {
-                if (it?.error  == false) {
-                    startActivity(Intent(this, LoginActivity::class.java))
-                } else {
-                    Toast.makeText(this, it?.message, Toast.LENGTH_SHORT).show()
-                }
+        authViewModel.errorMessage.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
+
+        authViewModel.registerUser.observe(this) { registerResponse ->
+            if (registerResponse != null) {
+                Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
             }
         }
 

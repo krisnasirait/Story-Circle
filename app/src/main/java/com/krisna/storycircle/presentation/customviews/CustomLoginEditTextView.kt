@@ -11,22 +11,19 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatButton
 import com.krisna.storycircle.R
 
-
-class CustomRegisterEditText @JvmOverloads constructor(
+class CustomLoginEditTextView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private lateinit var etName: EditText
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
-    private lateinit var btnRegister: AppCompatButton
+    private lateinit var btnLogin: AppCompatButton
 
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            val name = etName.text.toString().trim()
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
 
@@ -42,14 +39,14 @@ class CustomRegisterEditText @JvmOverloads constructor(
                 etPassword.error = null
             }
 
-            if (validateForm(name, email, password)) {
-                btnRegister.isEnabled = true
-                btnRegister.setBackgroundResource(R.drawable.custom_btn_rounded_enabled)
+            if (validateForm(email, password)) {
+                btnLogin.isEnabled = true
+                btnLogin.setBackgroundResource(R.drawable.custom_btn_rounded_enabled)
             } else {
-                btnRegister.isEnabled = false
-                btnRegister.setBackgroundResource(R.drawable.custom_btn_rounded_disabled)
+                btnLogin.isEnabled = false
+                btnLogin.setBackgroundResource(R.drawable.custom_btn_rounded_disabled)
             }
-            btnRegister.isEnabled = validateForm(name, email, password)
+            btnLogin.isEnabled = validateForm(email, password)
         }
 
         override fun afterTextChanged(s: Editable?) {
@@ -57,31 +54,25 @@ class CustomRegisterEditText @JvmOverloads constructor(
     }
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.custom_register_edit_text, this, true)
-        etName = findViewById(R.id.etName)
+        LayoutInflater.from(context).inflate(R.layout.custom_login_edit_text, this, true)
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
-        btnRegister = findViewById(R.id.btnRegister)
+        btnLogin = findViewById(R.id.btnLogin)
 
-        etName.addTextChangedListener(textWatcher)
         etEmail.addTextChangedListener(textWatcher)
         etPassword.addTextChangedListener(textWatcher)
 
-        btnRegister.isEnabled = false
-        btnRegister.setBackgroundResource(R.drawable.custom_btn_rounded_disabled)
+        btnLogin.isEnabled = false
+        btnLogin.setBackgroundResource(R.drawable.custom_btn_rounded_disabled)
     }
 
-    fun validateForm(name: String, email: String, password: String): Boolean {
-        return name.isNotEmpty() && email.isValidEmail() && password.length >= 8
+    fun validateForm(email: String, password: String): Boolean {
+        return email.isValidEmail() && password.length >= 8
     }
 
     private fun String.isValidEmail(): Boolean {
         return !TextUtils.isEmpty(this) && android.util.Patterns.EMAIL_ADDRESS.matcher(this)
             .matches()
-    }
-
-    fun getName(): String {
-        return etName.text.toString().trim()
     }
 
     fun getEmail(): String {
@@ -93,6 +84,6 @@ class CustomRegisterEditText @JvmOverloads constructor(
     }
 
     fun setOnRegisterClickListener(listener: OnClickListener) {
-        btnRegister.setOnClickListener(listener)
+        btnLogin.setOnClickListener(listener)
     }
 }

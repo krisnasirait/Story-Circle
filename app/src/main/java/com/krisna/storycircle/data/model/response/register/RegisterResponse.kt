@@ -1,4 +1,4 @@
-package com.krisna.storycircle.data.model.response
+package com.krisna.storycircle.data.model.response.register
 
 
 import com.google.gson.annotations.SerializedName

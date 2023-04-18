@@ -2,6 +2,7 @@ package com.krisna.storycircle.presentation.activity.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.krisna.storycircle.data.model.request.RegisterRequestBody
@@ -27,22 +28,29 @@ class RegisterActivity : AppCompatActivity() {
             authViewModel.registerUser(RegisterRequestBody(name, email, password))
         }
 
-        authViewModel.errorMessage.observe(this) {
-            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        setupObservers()
+    }
+
+    private fun setupObservers() {
+        authViewModel.errorMessage.observe(this) { errorMessage ->
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
         }
 
         authViewModel.registerUser.observe(this) { registerResponse ->
-            if (registerResponse != null) {
-                Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
+            registerResponse?.let {
+                showRegistrationSuccess()
             }
         }
 
-
-        authViewModel.isLoading.observe(this) {
+        authViewModel.isLoading.observe(this) { isLoading ->
             binding.lottieLoading.visibility =
-                if (it) android.view.View.VISIBLE else android.view.View.GONE
+                if (isLoading) View.VISIBLE else View.GONE
         }
+    }
+
+    private fun showRegistrationSuccess() {
+        Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
     }
 }

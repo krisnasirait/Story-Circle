@@ -83,7 +83,7 @@ class CustomLoginEditTextView @JvmOverloads constructor(
         return etPassword.text.toString().trim()
     }
 
-    fun setOnRegisterClickListener(listener: OnClickListener) {
+    fun setOnLoginClickListener(listener: OnClickListener) {
         btnLogin.setOnClickListener(listener)
     }
 }

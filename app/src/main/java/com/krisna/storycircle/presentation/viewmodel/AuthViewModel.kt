@@ -5,10 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.krisna.storycircle.data.model.request.LoginUserRequestBody
 import com.krisna.storycircle.data.model.request.RegisterRequestBody
-import com.krisna.storycircle.data.model.response.RegisterResponse
+import com.krisna.storycircle.data.model.response.login.LoginResponse
+import com.krisna.storycircle.data.model.response.register.RegisterResponse
 import com.krisna.storycircle.data.repository.StoryCircleRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Response
@@ -22,6 +26,9 @@ class AuthViewModel(
 
     private val _registerUser = MutableLiveData<RegisterResponse?>()
     val registerUser: LiveData<RegisterResponse?> = _registerUser
+
+    private val _loginUser = MutableLiveData<LoginResponse?>()
+    val loginUser: LiveData<LoginResponse?> = _loginUser
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
@@ -43,23 +50,69 @@ class AuthViewModel(
         }
     }
 
-    fun registerUser(registerRequestBody: RegisterRequestBody) {
-        viewModelScope.launch {
+    private fun handleLoginError(response: Response<LoginResponse>) {
+        val errorMessage = response.errorBody()?.string()
+        if (errorMessage != null) {
             try {
-                _isLoading.value = true
-                val response = storyCircleRepository.registerUser(registerRequestBody)
-                if (response.isSuccessful) {
-                    _isLoading.value = false
-                    _registerUser.value = response.body()
-                    Log.d("registerUserMessage", "isSuccess : ${response.body()?.message}")
-                } else {
-                    _isLoading.value = false
-                    handleRegistrationError(response)
+                val errorJson = JSONObject(errorMessage)
+                val error = errorJson.getString("message")
+                Log.d("registerUserMessage", "error $error")
+                _errorMessage.value = error
+            } catch (e: JSONException) {
+                Log.d("registerUserMessage", "JSON parsing error: ${e.message}")
+                _errorMessage.value = "Unexpected error occurred"
+            }
+        } else {
+            _errorMessage.value = "Unexpected error occurred"
+        }
+    }
+
+    fun registerUser(registerRequestBody: RegisterRequestBody) {
+        _isLoading.postValue(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                storyCircleRepository.registerUser(registerRequestBody)
+            }.onSuccess { response ->
+               withContext(Dispatchers.Main) {
+                   if (response.isSuccessful) {
+                       _registerUser.value = response.body()
+                   } else {
+                       handleRegistrationError(response)
+                   }
+               }
+            }.onFailure { e ->
+                withContext(Dispatchers.Main) {
+                    _errorMessage.value = e.message
                 }
-            }catch (e: Exception) {
-                _isLoading.value = false
-                Log.d("registerUserMessage", e.message.toString())
-                _errorMessage.value = e.message
+            }.also {
+                withContext(Dispatchers.Main) {
+                    _isLoading.postValue(false)
+                }
+            }
+        }
+    }
+
+    fun loginUser(loginUserRequestBody: LoginUserRequestBody) {
+        _isLoading.postValue(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                storyCircleRepository.loginUser(loginUserRequestBody)
+            }.onSuccess { response ->
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        _loginUser.value = response.body()
+                    } else {
+                        handleLoginError(response)
+                    }
+                }
+            }.onFailure { e ->
+                withContext(Dispatchers.Main) {
+                    _errorMessage.value = e.message
+                }
+            }.also {
+                withContext(Dispatchers.Main) {
+                    _isLoading.postValue(false)
+                }
             }
         }
     }

@@ -6,9 +6,11 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
+import com.google.android.material.button.MaterialButton
 import com.krisna.storycircle.R
 
 class CustomLoginEditTextView @JvmOverloads constructor(
@@ -17,7 +19,7 @@ class CustomLoginEditTextView @JvmOverloads constructor(
 
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
-    private lateinit var btnLogin: AppCompatButton
+    private lateinit var btnLogin: MaterialButton
 
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -41,10 +43,9 @@ class CustomLoginEditTextView @JvmOverloads constructor(
 
             if (validateForm(email, password)) {
                 btnLogin.isEnabled = true
-                btnLogin.setBackgroundResource(R.drawable.custom_btn_rounded_enabled)
+                btnLogin.setBackgroundColor(ContextCompat.getColor(context, R.color.primary_color))
             } else {
                 btnLogin.isEnabled = false
-                btnLogin.setBackgroundResource(R.drawable.custom_btn_rounded_disabled)
             }
             btnLogin.isEnabled = validateForm(email, password)
         }
@@ -63,7 +64,12 @@ class CustomLoginEditTextView @JvmOverloads constructor(
         etPassword.addTextChangedListener(textWatcher)
 
         btnLogin.isEnabled = false
-        btnLogin.setBackgroundResource(R.drawable.custom_btn_rounded_disabled)
+        btnLogin.setOnClickListener {
+            clearFocus()
+            val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(windowToken, 0)
+            rootView.requestFocus()
+        }
     }
 
     fun validateForm(email: String, password: String): Boolean {

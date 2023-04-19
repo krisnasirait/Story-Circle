@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
+import com.google.android.material.button.MaterialButton
 import com.krisna.storycircle.R
 
 
@@ -19,7 +21,7 @@ class CustomRegisterEditText @JvmOverloads constructor(
     private lateinit var etName: EditText
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
-    private lateinit var btnRegister: AppCompatButton
+    private lateinit var btnRegister: MaterialButton
 
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -44,10 +46,9 @@ class CustomRegisterEditText @JvmOverloads constructor(
 
             if (validateForm(name, email, password)) {
                 btnRegister.isEnabled = true
-                btnRegister.setBackgroundResource(R.drawable.custom_btn_rounded_enabled)
+                btnRegister.setBackgroundColor(ContextCompat.getColor(context, R.color.primary_color))
             } else {
                 btnRegister.isEnabled = false
-                btnRegister.setBackgroundResource(R.drawable.custom_btn_rounded_disabled)
             }
             btnRegister.isEnabled = validateForm(name, email, password)
         }
@@ -68,7 +69,6 @@ class CustomRegisterEditText @JvmOverloads constructor(
         etPassword.addTextChangedListener(textWatcher)
 
         btnRegister.isEnabled = false
-        btnRegister.setBackgroundResource(R.drawable.custom_btn_rounded_disabled)
     }
 
     fun validateForm(name: String, email: String, password: String): Boolean {

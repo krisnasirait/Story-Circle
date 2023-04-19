@@ -69,16 +69,18 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="24dp"
-        android:text="@string/register"
+        android:text="@string/login_title"
+        android:fontFamily="@font/poppins_semibold"
+        android:textSize="18sp"
+        android:backgroundTint="?attr/colorPrimary"
         android:textColor="@color/white"
-        android:background="@drawable/custom_btn_rounded_enabled"
         android:enabled="false"
         android:textAllCaps="false" />
 

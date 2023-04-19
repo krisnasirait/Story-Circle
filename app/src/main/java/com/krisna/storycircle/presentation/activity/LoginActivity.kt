@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.krisna.storycircle.data.model.request.LoginUserRequestBody
 import com.krisna.storycircle.databinding.ActivityLoginBinding
@@ -32,6 +33,10 @@ class LoginActivity : AppCompatActivity() {
             authViewModel.loginUser(LoginUserRequestBody(email, password))
         }
         setupObservers()
+
+        onBackPressedDispatcher.addCallback(this) {
+            finishAffinity()
+        }
     }
 
     private fun setupObservers() {

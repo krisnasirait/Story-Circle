@@ -183,6 +183,8 @@ class CameraFragment : Fragment() {
         binding.fabPost.setOnClickListener {
             val intent = Intent(requireContext(), PostActivity::class.java)
             intent.putExtra("photo", photoFile.absolutePath)
+            intent.putExtra("orientation", currentOrientation.toFloat())
+            Log.d("photosSent", "showPreview: $currentOrientation")
             startActivity(intent)
         }
 

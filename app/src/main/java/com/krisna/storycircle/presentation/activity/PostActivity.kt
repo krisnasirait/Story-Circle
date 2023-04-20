@@ -20,8 +20,9 @@ class PostActivity : AppCompatActivity() {
 
     private fun getImage() {
         val photoFilePath = intent.getStringExtra("photo")
+        val photoOrientation = intent.getIntExtra("orientation", 0)
         val bitmap = BitmapFactory.decodeFile(photoFilePath)
         binding.ivImagePost.setImageBitmap(bitmap)
-        binding.ivImagePost.rotation = 90f
+        binding.ivImagePost.rotation = photoOrientation * 90f
     }
 }

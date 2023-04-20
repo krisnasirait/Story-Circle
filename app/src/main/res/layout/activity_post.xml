@@ -23,9 +23,9 @@
         android:id="@+id/ivImagePost"
         android:layout_width="0dp"
         android:layout_height="200dp"
+        android:layout_margin="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="20dp"
         app:layout_constraintBottom_toTopOf="@id/tiDescription"
         app:layout_constraintTop_toBottomOf="@id/tvNewPost"/>
 

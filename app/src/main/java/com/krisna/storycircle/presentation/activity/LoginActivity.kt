@@ -11,6 +11,7 @@ import com.krisna.storycircle.data.model.request.LoginUserRequestBody
 import com.krisna.storycircle.databinding.ActivityLoginBinding
 import com.krisna.storycircle.presentation.viewmodel.AuthViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.math.log
 
 class LoginActivity : AppCompatActivity() {
 
@@ -48,6 +49,12 @@ class LoginActivity : AppCompatActivity() {
             loginUser?.let {
                 saveCredentials(binding.customLogin.getEmail(), binding.customLogin.getPassword())
                 showLoginSuccess()
+                val bearerToken = loginUser.loginResult.token
+                val sharedPref = getSharedPreferences("credentials", Context.MODE_PRIVATE)
+                with(sharedPref.edit()) {
+                    putString("bearerToken", bearerToken)
+                    apply()
+                }
             }
         }
 

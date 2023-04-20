@@ -35,6 +35,16 @@ class SplashActivity : AppCompatActivity() {
         if (email != null && password != null) {
             authViewModel.loginUser(LoginUserRequestBody(email, password))
 
+            authViewModel.loginUser.observe(this) { loginUser ->
+                loginUser?.let {
+                    val bearerToken = loginUser.loginResult.token
+                    with(sharedPref.edit()) {
+                        putString("bearerToken", bearerToken)
+                        apply()
+                    }
+                }
+            }
+
             authViewModel.isLoading.observe(this) { isLoading ->
                 if (!isLoading) {
                     startActivity(Intent(this, MainActivity::class.java))

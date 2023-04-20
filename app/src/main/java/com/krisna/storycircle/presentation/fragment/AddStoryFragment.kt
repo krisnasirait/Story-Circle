@@ -1,12 +1,15 @@
 package com.krisna.storycircle.presentation.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -17,9 +20,11 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import com.krisna.storycircle.databinding.FragmentAddStoryBinding
 import java.io.File
+import java.io.FileOutputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -29,10 +34,12 @@ class AddStoryFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraSelector: CameraSelector
+    private var currentOrientation = ExifInterface.ORIENTATION_NORMAL
+
+
+    private var photoFile: File? = null
 
     companion object {
-        const val CAMERA_X_RESULT = 200
-
         private val REQUIRED_PERMISSIONS = arrayOf(android.Manifest.permission.CAMERA)
     }
 
@@ -50,6 +57,10 @@ class AddStoryFragment : Fragment() {
         binding.fabCapture.setOnClickListener {
             takePhoto()
         }
+        binding.btnCancel.setOnClickListener {
+
+        }
+        binding.fabPost.setOnClickListener {  }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,9 +129,11 @@ class AddStoryFragment : Fragment() {
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
-        val photoFile = createFile(requireContext())
+        photoFile = createFile(requireContext())
 
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+        imageCapture.targetRotation = Surface.ROTATION_0
+
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile!!).build()
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(requireContext()),
@@ -134,14 +147,7 @@ class AddStoryFragment : Fragment() {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val intent = Intent()
-                    intent.putExtra("picture", photoFile)
-                    intent.putExtra(
-                        "isBackCamera",
-                        cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA
-                    )
-                    requireActivity().setResult(CAMERA_X_RESULT, intent)
-                    activity?.finish()
+                    showPreview(photoFile!!)
                 }
             })
     }
@@ -149,6 +155,69 @@ class AddStoryFragment : Fragment() {
     private fun createFile(context: Context): File {
         val fileName = "IMG_${System.currentTimeMillis()}.jpg"
         val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        Toast.makeText(requireContext(), "Image saved", Toast.LENGTH_SHORT).show()
         return File(storageDir, fileName)
+    }
+
+    private fun showPreview(photoFile: File) {
+        var bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
+        binding.previewView.visibility = View.GONE
+        binding.fabCapture.visibility = View.GONE
+        binding.previewImage.visibility = View.VISIBLE
+
+        if (bitmap.width > bitmap.height) {
+            val matrix = Matrix()
+            matrix.postRotate(90f)
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        }
+
+        binding.previewImage.setImageBitmap(bitmap)
+
+        binding.btnCancel.visibility = View.VISIBLE
+        binding.fabPost.visibility = View.VISIBLE
+
+        binding.btnRotatePict.setOnClickListener {
+            val rotatedFile = rotateImage(photoFile)
+            val rotatedBitmap = BitmapFactory.decodeFile(rotatedFile.absolutePath)
+            binding.previewImage.setImageBitmap(rotatedBitmap)
+        }
+
+        binding.btnCancel.setOnClickListener {
+            photoFile.delete()
+            binding.previewView.visibility = View.VISIBLE
+            binding.fabCapture.visibility = View.VISIBLE
+            binding.previewImage.visibility = View.GONE
+            binding.btnCancel.visibility = View.GONE
+            binding.fabPost.visibility = View.GONE
+        }
+    }
+
+    private fun rotateImage(file: File): File {
+        val ei = ExifInterface(file.absolutePath)
+        var orientation = ei.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )
+        orientation = when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> ExifInterface.ORIENTATION_ROTATE_180
+            ExifInterface.ORIENTATION_ROTATE_180 -> ExifInterface.ORIENTATION_ROTATE_270
+            ExifInterface.ORIENTATION_ROTATE_270 -> ExifInterface.ORIENTATION_NORMAL
+            else -> ExifInterface.ORIENTATION_ROTATE_90
+        }
+        currentOrientation = orientation
+        val matrix = Matrix()
+        when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+        }
+        val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+        val rotatedBitmap =
+            Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        val outputStream = FileOutputStream(file)
+        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        outputStream.flush()
+        outputStream.close()
+        return file
     }
 }

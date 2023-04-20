@@ -57,10 +57,6 @@ class AddStoryFragment : Fragment() {
         binding.fabCapture.setOnClickListener {
             takePhoto()
         }
-        binding.btnCancel.setOnClickListener {
-
-        }
-        binding.fabPost.setOnClickListener {  }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -173,6 +169,7 @@ class AddStoryFragment : Fragment() {
 
         binding.previewImage.setImageBitmap(bitmap)
 
+        binding.btnRotatePict.visibility = View.VISIBLE
         binding.btnCancel.visibility = View.VISIBLE
         binding.fabPost.visibility = View.VISIBLE
 
@@ -188,6 +185,7 @@ class AddStoryFragment : Fragment() {
             binding.fabCapture.visibility = View.VISIBLE
             binding.previewImage.visibility = View.GONE
             binding.btnCancel.visibility = View.GONE
+            binding.btnRotatePict.visibility = View.GONE
             binding.fabPost.visibility = View.GONE
         }
     }

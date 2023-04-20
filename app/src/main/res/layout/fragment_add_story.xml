@@ -39,6 +39,7 @@
         android:id="@+id/btnCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:src="@drawable/outline_cancel_24"
         android:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,6 +49,7 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/btnRotatePict"
         android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:src="@drawable/outline_crop_rotate_24"
         app:layout_constraintStart_toStartOf="parent"

@@ -12,9 +12,9 @@
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/menu_addstory"
-        android:name="com.krisna.storycircle.presentation.fragment.AddStoryFragment"
+        android:name="com.krisna.storycircle.presentation.fragment.CameraFragment"
         android:label="Add Story"
-        tools:layout="@layout/fragment_add_story" />
+        tools:layout="@layout/fragment_camera" />
     <fragment
         android:id="@+id/menu_account"
         android:name="com.krisna.storycircle.presentation.fragment.AccountFragment"

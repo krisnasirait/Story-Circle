@@ -1,6 +1,7 @@
 package com.krisna.storycircle.presentation.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -22,15 +23,16 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
-import com.krisna.storycircle.databinding.FragmentAddStoryBinding
+import com.krisna.storycircle.databinding.FragmentCameraBinding
+import com.krisna.storycircle.presentation.activity.PostActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class AddStoryFragment : Fragment() {
+class CameraFragment : Fragment() {
 
-    private lateinit var binding: FragmentAddStoryBinding
+    private lateinit var binding: FragmentCameraBinding
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraSelector: CameraSelector
@@ -47,7 +49,7 @@ class AddStoryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAddStoryBinding.inflate(inflater, container, false)
+        binding = FragmentCameraBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -57,6 +59,11 @@ class AddStoryFragment : Fragment() {
         binding.fabCapture.setOnClickListener {
             takePhoto()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setUpCamera()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -172,6 +179,12 @@ class AddStoryFragment : Fragment() {
         binding.btnRotatePict.visibility = View.VISIBLE
         binding.btnCancel.visibility = View.VISIBLE
         binding.fabPost.visibility = View.VISIBLE
+
+        binding.fabPost.setOnClickListener {
+            val intent = Intent(requireContext(), PostActivity::class.java)
+            intent.putExtra("photo", photoFile.absolutePath)
+            startActivity(intent)
+        }
 
         binding.btnRotatePict.setOnClickListener {
             val rotatedFile = rotateImage(photoFile)

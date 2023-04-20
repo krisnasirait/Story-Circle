@@ -15,4 +15,5 @@
     <string name="required">* Required</string>
     <string name="account">Account</string>
     <string name="log_out">Log Out</string>
+    <string name="capture_image">capture image</string>
 </resources>

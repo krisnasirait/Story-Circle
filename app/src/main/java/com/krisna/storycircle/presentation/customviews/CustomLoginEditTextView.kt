@@ -46,6 +46,8 @@ class CustomLoginEditTextView @JvmOverloads constructor(
                 btnLogin.setBackgroundColor(ContextCompat.getColor(context, R.color.primary_color))
             } else {
                 btnLogin.isEnabled = false
+                btnLogin.setBackgroundColor(ContextCompat.getColor(context, R.color.light_primary_color))
+                btnLogin.setTextColor(ContextCompat.getColor(context, R.color.text_icons))
             }
             btnLogin.isEnabled = validateForm(email, password)
         }
@@ -64,6 +66,8 @@ class CustomLoginEditTextView @JvmOverloads constructor(
         etPassword.addTextChangedListener(textWatcher)
 
         btnLogin.isEnabled = false
+        btnLogin.setBackgroundColor(ContextCompat.getColor(context, R.color.light_primary_color))
+        btnLogin.setTextColor(ContextCompat.getColor(context, R.color.text_icons))
         btnLogin.setOnClickListener {
             clearFocus()
             val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager

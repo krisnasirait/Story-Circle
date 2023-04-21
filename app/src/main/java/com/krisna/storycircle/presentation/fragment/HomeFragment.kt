@@ -1,60 +1,89 @@
 package com.krisna.storycircle.presentation.fragment
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.krisna.storycircle.R
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.krisna.storycircle.databinding.FragmentHomeBinding
+import com.krisna.storycircle.presentation.activity.DetailStoryActivity
+import com.krisna.storycircle.presentation.adapter.StoryAdapter
+import com.krisna.storycircle.presentation.viewmodel.StoryViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentHomeBinding
+    private val storyViewModel: StoryViewModel by viewModel()
+    private lateinit var storyAdapter: StoryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    ): View {
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        setupRecyclerView()
+        setupViewModelObservers()
+        setupActionBar()
+    }
+
+    private fun setupActionBar() {
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            title = "Home"
+            setDisplayHomeAsUpEnabled(false)
+        }
+    }
+
+    private fun setupRecyclerView() {
+        storyAdapter = StoryAdapter(this)
+        binding.rvStoryList.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = storyAdapter
+        }
+    }
+
+    private fun setupViewModelObservers()  {
+        val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
+            .getString("bearerToken", "") ?: ""
+
+        storyViewModel.getAllStory(bearerToken, null, null, null)
+        storyViewModel.isLoading.observe(requireActivity()) {
+            binding.lottieLoading.visibility = if (it) View.VISIBLE else View.GONE
+        }
+
+        storyViewModel.listStory.observe(requireActivity()) { storyList ->
+            storyAdapter.setData(storyList ?: emptyList())
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
+            .getString("bearerToken", "") ?: ""
+
+        storyViewModel.getAllStory(bearerToken, null, null, null)
+        storyViewModel.isLoading.observe(requireActivity()) {
+        }
+
+        storyViewModel.listStory.observe(requireActivity()) { storyList ->
+            storyAdapter.setData(storyList ?: emptyList())
+        }
+    }
+
+    override fun onStoryClicked(id: String) {
+        val intent = Intent(activity, DetailStoryActivity::class.java)
+        intent.putExtra("id", id)
+        startActivity(intent)
     }
 }

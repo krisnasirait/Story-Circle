@@ -1,4 +1,4 @@
-package com.krisna.storycircle.presentation.activity.auth
+package com.krisna.storycircle.presentation.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -26,6 +26,11 @@ class RegisterActivity : AppCompatActivity() {
             val password = binding.customEditText.getPassword()
 
             authViewModel.registerUser(RegisterRequestBody(name, email, password))
+        }
+
+        binding.tvLogin.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
 
         setupObservers()

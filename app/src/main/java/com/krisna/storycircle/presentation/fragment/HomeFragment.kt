@@ -1,6 +1,7 @@
 package com.krisna.storycircle.presentation.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krisna.storycircle.databinding.FragmentHomeBinding
+import com.krisna.storycircle.presentation.activity.DetailStoryActivity
 import com.krisna.storycircle.presentation.adapter.StoryAdapter
 import com.krisna.storycircle.presentation.viewmodel.StoryViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -79,6 +81,8 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener {
     }
 
     override fun onStoryClicked(id: String) {
-        TODO("Not yet implemented")
+        val intent = Intent(activity, DetailStoryActivity::class.java)
+        intent.putExtra("id", id)
+        startActivity(intent)
     }
 }

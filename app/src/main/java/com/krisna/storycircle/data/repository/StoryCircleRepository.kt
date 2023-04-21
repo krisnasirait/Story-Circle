@@ -4,6 +4,7 @@ import com.krisna.storycircle.data.model.request.LoginUserRequestBody
 import com.krisna.storycircle.data.model.request.RegisterRequestBody
 import com.krisna.storycircle.data.model.response.addstory.AddNewStoryResponse
 import com.krisna.storycircle.data.model.response.allstory.AllStoriesResponse
+import com.krisna.storycircle.data.model.response.detailstory.StoryDetailResponse
 import com.krisna.storycircle.data.model.response.login.LoginResponse
 import com.krisna.storycircle.data.model.response.register.RegisterResponse
 import com.krisna.storycircle.data.remote.ApiService
@@ -38,6 +39,10 @@ class StoryCircleRepository(
 
     suspend fun getAllStories(token: String, page: Int?, size: Int?, location: Int?): Response<AllStoriesResponse> {
         return apiService.getAllStories("Bearer $token", page, size, location)
+    }
+
+    suspend fun getStoryDetail(token: String, storyId: String): Response<StoryDetailResponse> {
+        return apiService.getStoryDetail("Bearer $token", storyId)
     }
 
 }

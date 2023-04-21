@@ -18,4 +18,6 @@
     <string name="capture_image">capture image</string>
     <string name="new_post">New Post</string>
     <string name="enter_your_post_description">Enter your post Description</string>
+    <string name="detail_name">Name :</string>
+    <string name="detail_description">Description :</string>
 </resources>

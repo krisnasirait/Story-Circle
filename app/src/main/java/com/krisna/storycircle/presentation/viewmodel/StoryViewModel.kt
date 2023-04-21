@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krisna.storycircle.data.model.response.addstory.AddNewStoryResponse
 import com.krisna.storycircle.data.model.response.allstory.Story
+import com.krisna.storycircle.data.model.response.detailstory.StoryDetailResponse
 import com.krisna.storycircle.data.repository.StoryCircleRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,6 +25,9 @@ class StoryViewModel(
 
     private val _listStory = MutableLiveData<List<Story?>?>()
     val listStory : LiveData<List<Story?>?> = _listStory
+
+    private val _storyDetail = MutableLiveData<StoryDetailResponse?>()
+    val storyDetail : LiveData<StoryDetailResponse?> = _storyDetail
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage : LiveData<String> = _errorMessage
@@ -59,6 +63,28 @@ class StoryViewModel(
             }.onSuccess { story ->
                 withContext(Dispatchers.Main) {
                     _listStory.value = story?.listStory
+                }
+            }.onFailure { throwable ->
+                withContext(Dispatchers.Main) {
+                    _errorMessage.value = throwable.message
+                }
+            }.also {
+                withContext(Dispatchers.Main) {
+                    _isLoading.postValue(false)
+                }
+            }
+        }
+    }
+
+    fun getStoryDetail(token: String, storyId: String) {
+        _isLoading.postValue(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                val response = storyCircleRepository.getStoryDetail(token, storyId)
+                response.body()
+            }.onSuccess { story ->
+                withContext(Dispatchers.Main) {
+                    _storyDetail.value = story
                 }
             }.onFailure { throwable ->
                 withContext(Dispatchers.Main) {

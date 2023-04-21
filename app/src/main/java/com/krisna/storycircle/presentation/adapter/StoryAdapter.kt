@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.krisna.storycircle.data.model.response.allstory.Story
 import com.krisna.storycircle.databinding.ItemStoryBinding
+import com.krisna.storycircle.presentation.viewmodel.StoryViewModel
 
 class StoryAdapter(
     private val itemClicklistener: OnItemClickListener,

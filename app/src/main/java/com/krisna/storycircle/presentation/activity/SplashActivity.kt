@@ -7,7 +7,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import com.krisna.storycircle.R
 import com.krisna.storycircle.data.model.request.LoginUserRequestBody
 import com.krisna.storycircle.databinding.ActivitySplashBinding
 import com.krisna.storycircle.presentation.viewmodel.AuthViewModel
@@ -25,6 +28,8 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.ivAppLogo.slideUp()
+        binding.tvAppName.slideUp()
         checkCredentials()
     }
 
@@ -67,6 +72,11 @@ class SplashActivity : AppCompatActivity() {
                 finish()
             }, splashTime)
         }
+    }
+
+    private fun View.slideUp() {
+        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up)
+        startAnimation(animation)
     }
 
 

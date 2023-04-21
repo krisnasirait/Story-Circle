@@ -53,6 +53,8 @@ class PostActivity : AppCompatActivity() {
 
         if (bearerToken.isNotEmpty() && photoFile != null) {
             storyViewModel.postStory(bearerToken, description, photoFile, lat, lon)
+        } else if (description.isEmpty()) {
+            Toast.makeText(this, "Description cannot be empty", Toast.LENGTH_SHORT).show()
         }
 
         storyViewModel.isLoading.observe(this) {
@@ -82,12 +84,5 @@ class PostActivity : AppCompatActivity() {
     private fun setupActionBar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "New Post"
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-        }
-        return true
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.krisna.storycircle.data.model.request.LoginUserRequestBody
 import com.krisna.storycircle.databinding.ActivitySplashBinding
@@ -42,6 +43,7 @@ class SplashActivity : AppCompatActivity() {
                         putString("bearerToken", bearerToken)
                         apply()
                     }
+                    Log.d("auth", "checkCredentials: $bearerToken")
                 }
             }
 

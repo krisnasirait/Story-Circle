@@ -3,6 +3,7 @@ package com.krisna.storycircle.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -11,7 +12,6 @@ import com.krisna.storycircle.data.model.request.LoginUserRequestBody
 import com.krisna.storycircle.databinding.ActivityLoginBinding
 import com.krisna.storycircle.presentation.viewmodel.AuthViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.math.log
 
 class LoginActivity : AppCompatActivity() {
 
@@ -51,6 +51,7 @@ class LoginActivity : AppCompatActivity() {
                 showLoginSuccess()
                 val bearerToken = loginUser.loginResult.token
                 val sharedPref = getSharedPreferences("credentials", Context.MODE_PRIVATE)
+                Log.d("auth", "setupObservers: $bearerToken")
                 with(sharedPref.edit()) {
                     putString("bearerToken", bearerToken)
                     apply()

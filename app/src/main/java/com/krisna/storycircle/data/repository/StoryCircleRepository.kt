@@ -3,6 +3,7 @@ package com.krisna.storycircle.data.repository
 import com.krisna.storycircle.data.model.request.LoginUserRequestBody
 import com.krisna.storycircle.data.model.request.RegisterRequestBody
 import com.krisna.storycircle.data.model.response.addstory.AddNewStoryResponse
+import com.krisna.storycircle.data.model.response.allstory.AllStoriesResponse
 import com.krisna.storycircle.data.model.response.login.LoginResponse
 import com.krisna.storycircle.data.model.response.register.RegisterResponse
 import com.krisna.storycircle.data.remote.ApiService
@@ -33,6 +34,10 @@ class StoryCircleRepository(
         val lonRequestBody = lon?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
 
         return apiService.addStory("Bearer $token", descriptionRequestBody, photoPart, latRequestBody, lonRequestBody)
+    }
+
+    suspend fun getAllStories(token: String, page: Int?, size: Int?, location: Int?): Response<AllStoriesResponse> {
+        return apiService.getAllStories("Bearer $token", page, size, location)
     }
 
 }

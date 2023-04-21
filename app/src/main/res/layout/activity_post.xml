@@ -14,17 +14,25 @@
         android:layout_margin="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/etDescription"
+        app:layout_constraintBottom_toTopOf="@id/tiDescription"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <EditText
-        android:id="@+id/etDescription"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tiDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Description"
-        app:layout_constraintTop_toBottomOf="@id/ivImagePost"
-        app:layout_constraintBottom_toTopOf="@id/btnUploadStory"
-        android:layout_margin="20dp"/>
+        android:hint="@string/enter_your_post_description"
+        android:layout_margin="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivImagePost">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnUploadStory"

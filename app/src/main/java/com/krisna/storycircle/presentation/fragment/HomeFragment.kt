@@ -59,6 +59,7 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener {
 
         storyViewModel.getAllStory(bearerToken, null, null, null)
         storyViewModel.isLoading.observe(requireActivity()) {
+            binding.lottieLoading.visibility = if (it) View.VISIBLE else View.GONE
         }
 
         storyViewModel.listStory.observe(requireActivity()) { storyList ->

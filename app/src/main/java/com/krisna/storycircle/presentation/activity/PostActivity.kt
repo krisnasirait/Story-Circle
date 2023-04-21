@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.exifinterface.media.ExifInterface
@@ -52,6 +53,10 @@ class PostActivity : AppCompatActivity() {
 
         if (bearerToken.isNotEmpty() && photoFile != null) {
             storyViewModel.postStory(bearerToken, description, photoFile, lat, lon)
+        }
+
+        storyViewModel.isLoading.observe(this) {
+            binding.lottieLoading.visibility = if (it) View.VISIBLE else View.GONE
         }
     }
 

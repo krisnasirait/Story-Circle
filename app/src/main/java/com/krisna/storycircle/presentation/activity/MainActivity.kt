@@ -1,6 +1,7 @@
 package com.krisna.storycircle.presentation.activity
 
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -20,5 +21,9 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
 
         navView.setupWithNavController(navController)
+        
+        onBackPressedDispatcher.addCallback(this) {
+            finishAffinity()
+        }
     }
 }

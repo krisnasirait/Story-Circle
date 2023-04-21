@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krisna.storycircle.databinding.FragmentHomeBinding
@@ -29,8 +30,17 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         setupRecyclerView()
         setupViewModelObservers()
+        setupActionBar()
+    }
+
+    private fun setupActionBar() {
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            title = "Home"
+            setDisplayHomeAsUpEnabled(false)
+        }
     }
 
     private fun setupRecyclerView() {

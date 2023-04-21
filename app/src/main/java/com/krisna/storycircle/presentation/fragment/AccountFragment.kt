@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.krisna.storycircle.databinding.FragmentAccountBinding
 import com.krisna.storycircle.presentation.activity.LoginActivity
@@ -25,12 +26,21 @@ class AccountFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupActionBar()
+
         binding.btnLogOut.setOnClickListener {
             val sharedPref = activity?.getSharedPreferences("credentials", Context.MODE_PRIVATE)
             val editor = sharedPref?.edit()
             editor?.clear()
             editor?.apply()
             startActivity(Intent(activity, LoginActivity::class.java))
+        }
+    }
+
+    private fun setupActionBar() {
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            title = "Account"
+            setDisplayHomeAsUpEnabled(false)
         }
     }
 }

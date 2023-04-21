@@ -1,11 +1,15 @@
 package com.krisna.storycircle.presentation.activity
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.exifinterface.media.ExifInterface
 import com.krisna.storycircle.databinding.ActivityPostBinding
 import com.krisna.storycircle.presentation.viewmodel.StoryViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -29,7 +33,7 @@ class PostActivity : AppCompatActivity() {
             storyViewModel.addStory.observe(this) { addStory ->
                 if (addStory?.error == false) {
                     Toast.makeText(this, "Story posted", Toast.LENGTH_SHORT).show()
-                    finish()
+                    startActivity(Intent(this, MainActivity::class.java))
                 } else {
                     Toast.makeText(this, "Failed to post story", Toast.LENGTH_SHORT).show()
                 }
@@ -53,10 +57,21 @@ class PostActivity : AppCompatActivity() {
 
     private fun getImage() {
         val photoFilePath = intent.getStringExtra("photo")
-        val photoOrientation = intent.getIntExtra("orientation", 0)
+        val exif = ExifInterface(photoFilePath!!)
+        val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
         val bitmap = BitmapFactory.decodeFile(photoFilePath)
-        binding.ivImagePost.setImageBitmap(bitmap)
-        binding.ivImagePost.rotation = photoOrientation * 90f
+        val rotatedBitmap = when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> bitmap.rotate(90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> bitmap.rotate(180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> bitmap.rotate(270f)
+            else -> bitmap
+        }
+        binding.ivImagePost.setImageBitmap(rotatedBitmap)
+    }
+
+    private fun Bitmap.rotate(degrees: Float): Bitmap {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
     }
 
     private fun setupActionBar() {

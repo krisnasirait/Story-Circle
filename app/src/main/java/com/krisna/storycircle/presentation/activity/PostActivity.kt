@@ -26,18 +26,29 @@ class PostActivity : AppCompatActivity() {
         binding = ActivityPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        getImage()
-        setupActionBar()
-        binding.btnUploadStory.setOnClickListener {
-            postStory()
+        setupViews()
+        setupObservers()
+    }
 
-            storyViewModel.addStory.observe(this) { addStory ->
-                if (addStory?.error == false) {
-                    Toast.makeText(this, "Story posted", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, MainActivity::class.java))
-                } else {
-                    Toast.makeText(this, "Failed to post story", Toast.LENGTH_SHORT).show()
-                }
+    private fun setupViews() {
+        binding.btnUploadStory.setOnClickListener { postStory() }
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            title = "New Post"
+        }
+        getImage()
+    }
+
+    private fun setupObservers() {
+        storyViewModel.isLoading.observe(this) {
+            binding.lottieLoading.visibility = if (it) View.VISIBLE else View.GONE
+        }
+        storyViewModel.addStory.observe(this) { addStory ->
+            if (addStory?.error == false) {
+                Toast.makeText(this, "Story posted", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, MainActivity::class.java))
+            } else {
+                Toast.makeText(this, "Failed to post story", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -45,20 +56,16 @@ class PostActivity : AppCompatActivity() {
     private fun postStory() {
         val bearerToken = getSharedPreferences("credentials", Context.MODE_PRIVATE)
             .getString("bearerToken", "") ?: ""
-        val description = binding.etDescription.text.toString()
+        val description = binding.etDescription.text.toString().trim()
         val photoFilePath = intent.getStringExtra("photo")
         val lat = intent.getDoubleExtra("lat", 0.0)
         val lon = intent.getDoubleExtra("lon", 0.0)
         val photoFile = photoFilePath?.let { File(it) }
 
-        if (bearerToken.isNotEmpty() && photoFile != null) {
+        if (bearerToken.isNotEmpty() && photoFile != null && description.isNotEmpty()) {
             storyViewModel.postStory(bearerToken, description, photoFile, lat, lon)
-        } else if (description.isEmpty()) {
+        } else {
             Toast.makeText(this, "Description cannot be empty", Toast.LENGTH_SHORT).show()
-        }
-
-        storyViewModel.isLoading.observe(this) {
-            binding.lottieLoading.visibility = if (it) View.VISIBLE else View.GONE
         }
     }
 
@@ -81,8 +88,11 @@ class PostActivity : AppCompatActivity() {
         return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
     }
 
-    private fun setupActionBar() {
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "New Post"
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

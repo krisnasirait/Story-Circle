@@ -68,7 +68,7 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.15.1'
 
     //coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
 
     //viewmodel
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
@@ -89,4 +89,9 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:${camerax_version}"
     implementation "androidx.camera:camera-view:${camerax_version}"
 
+
+    //paging
+    def paging_version = "3.1.1"
+
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 }

@@ -4,9 +4,10 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.krisna.storycircle.data.model.response.allstory.Story
 import com.krisna.storycircle.data.remote.ApiService
+import com.krisna.storycircle.data.repository.StoryCircleRepository
 
 class AllStoriesPagingSource(
-    private val apiService: ApiService,
+    private val storyCircleRepository: StoryCircleRepository,
     private val token: String,
     private val location: Int?
 ) : PagingSource<Int, Story>() {
@@ -20,7 +21,7 @@ class AllStoriesPagingSource(
         val pageSize = params.loadSize
 
         return try {
-            val response = apiService.getAllStories(token, page, pageSize, location)
+            val response = storyCircleRepository.getAllStories(token, page, pageSize, location)
             if (response.isSuccessful) {
                 val stories = response.body()?.listStory ?: emptyList()
                 LoadResult.Page(

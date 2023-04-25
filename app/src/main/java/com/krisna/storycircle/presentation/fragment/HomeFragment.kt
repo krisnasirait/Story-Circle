@@ -12,14 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.krisna.storycircle.databinding.FragmentHomeBinding
 import com.krisna.storycircle.presentation.activity.DetailStoryActivity
 import com.krisna.storycircle.presentation.adapter.StoryAdapter
+import com.krisna.storycircle.presentation.adapter.StoryPagingAdapter
 import com.krisna.storycircle.presentation.viewmodel.StoryViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener {
+class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener, StoryPagingAdapter.OnItemClickListener {
 
     private lateinit var binding: FragmentHomeBinding
     private val storyViewModel: StoryViewModel by viewModel()
     private lateinit var storyAdapter: StoryAdapter
+    private lateinit var storyPagingAdapter: StoryPagingAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +35,8 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
 
-        setupRecyclerView()
+//        setupRecyclerView()
+        setupPagingRecyclerView()
         setupViewModelObservers()
         setupActionBar()
     }
@@ -53,17 +56,29 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener {
         }
     }
 
+    private fun setupPagingRecyclerView() {
+        storyPagingAdapter = StoryPagingAdapter(this)
+        binding.rvStoryList.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = storyPagingAdapter
+        }
+    }
+
     private fun setupViewModelObservers()  {
         val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
             .getString("bearerToken", "") ?: ""
+        storyViewModel.setToken(bearerToken)
 
-        storyViewModel.getAllStory(bearerToken, null, null, null)
-        storyViewModel.isLoading.observe(requireActivity()) {
-            binding.lottieLoading.visibility = if (it) View.VISIBLE else View.GONE
-        }
-
-        storyViewModel.listStory.observe(requireActivity()) { storyList ->
-            storyAdapter.setData(storyList ?: emptyList())
+//        storyViewModel.getAllStory(bearerToken, null, null, null)
+//        storyViewModel.isLoading.observe(requireActivity()) {
+//            binding.lottieLoading.visibility = if (it) View.VISIBLE else View.GONE
+//        }
+//
+//        storyViewModel.listStory.observe(requireActivity()) { storyList ->
+//            storyAdapter.setData(storyList ?: emptyList())
+//        }
+        storyViewModel.stories.observe(viewLifecycleOwner) { pagingData ->
+            storyPagingAdapter.submitData(lifecycle, pagingData)
         }
     }
 
@@ -72,13 +87,20 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener {
         val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
             .getString("bearerToken", "") ?: ""
 
-        storyViewModel.getAllStory(bearerToken, null, null, null)
-        storyViewModel.isLoading.observe(requireActivity()) {
+        storyViewModel.setToken(bearerToken)
+        storyPagingAdapter.refresh()
+        storyViewModel.stories.observe(viewLifecycleOwner) { pagingData ->
+            storyPagingAdapter.submitData(lifecycle, pagingData)
         }
 
-        storyViewModel.listStory.observe(requireActivity()) { storyList ->
-            storyAdapter.setData(storyList ?: emptyList())
-        }
+
+//        storyViewModel.getAllStory(bearerToken, null, null, null)
+//        storyViewModel.isLoading.observe(requireActivity()) {
+//        }
+//
+//        storyViewModel.listStory.observe(requireActivity()) { storyList ->
+//            storyAdapter.setData(storyList ?: emptyList())
+//        }
     }
 
     override fun onStoryClicked(id: String) {

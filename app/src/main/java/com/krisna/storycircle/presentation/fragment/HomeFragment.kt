@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krisna.storycircle.databinding.FragmentHomeBinding
 import com.krisna.storycircle.presentation.activity.DetailStoryActivity
@@ -34,25 +36,19 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener, StoryPagingAd
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-//        setupRecyclerView()
         setupPagingRecyclerView()
         setupViewModelObservers()
         setupActionBar()
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            refresh()
+        }
     }
 
     private fun setupActionBar() {
         (activity as AppCompatActivity).supportActionBar?.apply {
             title = "Home"
             setDisplayHomeAsUpEnabled(false)
-        }
-    }
-
-    private fun setupRecyclerView() {
-        storyAdapter = StoryAdapter(this)
-        binding.rvStoryList.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = storyAdapter
         }
     }
 
@@ -69,16 +65,23 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener, StoryPagingAd
             .getString("bearerToken", "") ?: ""
         storyViewModel.setToken(bearerToken)
 
-//        storyViewModel.getAllStory(bearerToken, null, null, null)
-//        storyViewModel.isLoading.observe(requireActivity()) {
-//            binding.lottieLoading.visibility = if (it) View.VISIBLE else View.GONE
-//        }
-//
-//        storyViewModel.listStory.observe(requireActivity()) { storyList ->
-//            storyAdapter.setData(storyList ?: emptyList())
-//        }
         storyViewModel.stories.observe(viewLifecycleOwner) { pagingData ->
-            storyPagingAdapter.submitData(lifecycle, pagingData)
+           storyPagingAdapter.submitData(lifecycle, pagingData)
+        }
+
+        storyPagingAdapter.addLoadStateListener { loadState ->
+            when (loadState.refresh) {
+                is LoadState.Loading -> {
+                    binding.swipeRefreshLayout.isRefreshing = true
+                }
+                is LoadState.NotLoading -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
+                is LoadState.Error -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                    Toast.makeText(requireContext(), "Error loading data", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -88,24 +91,19 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener, StoryPagingAd
             .getString("bearerToken", "") ?: ""
 
         storyViewModel.setToken(bearerToken)
-        storyPagingAdapter.refresh()
         storyViewModel.stories.observe(viewLifecycleOwner) { pagingData ->
             storyPagingAdapter.submitData(lifecycle, pagingData)
         }
-
-
-//        storyViewModel.getAllStory(bearerToken, null, null, null)
-//        storyViewModel.isLoading.observe(requireActivity()) {
-//        }
-//
-//        storyViewModel.listStory.observe(requireActivity()) { storyList ->
-//            storyAdapter.setData(storyList ?: emptyList())
-//        }
     }
 
     override fun onStoryClicked(id: String) {
         val intent = Intent(activity, DetailStoryActivity::class.java)
         intent.putExtra("id", id)
         startActivity(intent)
+    }
+
+    private fun refresh() {
+        storyPagingAdapter.refresh()
+        binding.rvStoryList.scrollToPosition(0)
     }
 }

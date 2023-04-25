@@ -9,6 +9,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.liveData
 import com.krisna.storycircle.data.model.response.addstory.AddNewStoryResponse
 import com.krisna.storycircle.data.model.response.allstory.Story
 import com.krisna.storycircle.data.model.response.detailstory.StoryDetailResponse
@@ -20,7 +21,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 class StoryViewModel(
-    private val storyCircleRepository: StoryCircleRepository
+    private val storyCircleRepository: StoryCircleRepository,
 ) : ViewModel() {
 
     private var token: String? = null
@@ -45,10 +46,9 @@ class StoryViewModel(
             pageSize = 10,
             enablePlaceholders = false,
             maxSize = 100
-        )
-    ) {
-        AllStoriesPagingSource(storyCircleRepository, token.toString(), null)
-    }.flow.cachedIn(viewModelScope).asLiveData()
+        ),
+        pagingSourceFactory = { AllStoriesPagingSource(storyCircleRepository, token.toString(), null) }
+    ).liveData.cachedIn(viewModelScope)
 
     fun postStory(token: String, description: String, photoFile: File, lat: Double?, lon: Double?) {
         _isLoading.postValue(true)

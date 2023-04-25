@@ -3,7 +3,6 @@ package com.krisna.storycircle.data.repository.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.krisna.storycircle.data.model.response.allstory.Story
-import com.krisna.storycircle.data.remote.ApiService
 import com.krisna.storycircle.data.repository.StoryCircleRepository
 
 class AllStoriesPagingSource(
@@ -13,7 +12,7 @@ class AllStoriesPagingSource(
 ) : PagingSource<Int, Story>() {
 
     companion object {
-        private const val INITIAL_PAGE = 0
+        private const val INITIAL_PAGE = 1
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Story> {
@@ -24,8 +23,9 @@ class AllStoriesPagingSource(
             val response = storyCircleRepository.getAllStories(token, page, pageSize, location)
             if (response.isSuccessful) {
                 val stories = response.body()?.listStory ?: emptyList()
+                val sortedStories = stories.sortedByDescending { it.createdAt }
                 LoadResult.Page(
-                    data = stories,
+                    data = sortedStories,
                     prevKey = if (page == INITIAL_PAGE) null else page - 1,
                     nextKey = if (stories.isEmpty()) null else page + 1
                 )
@@ -37,7 +37,11 @@ class AllStoriesPagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Story>): Int? {
-        return state.anchorPosition
+    override fun getRefreshKey(state: PagingState<Int, Story>): Int {
+        return state.anchorPosition?.let { anchorPosition ->
+            val anchorPage = state.closestPageToPosition(anchorPosition)
+            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+        } ?: INITIAL_PAGE
     }
+
 }

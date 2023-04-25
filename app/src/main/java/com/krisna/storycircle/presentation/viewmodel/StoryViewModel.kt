@@ -3,19 +3,28 @@ package com.krisna.storycircle.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.liveData
 import com.krisna.storycircle.data.model.response.addstory.AddNewStoryResponse
 import com.krisna.storycircle.data.model.response.allstory.Story
 import com.krisna.storycircle.data.model.response.detailstory.StoryDetailResponse
 import com.krisna.storycircle.data.repository.StoryCircleRepository
+import com.krisna.storycircle.data.repository.paging.AllStoriesPagingSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
 class StoryViewModel(
-    private val storyCircleRepository: StoryCircleRepository
+    private val storyCircleRepository: StoryCircleRepository,
 ) : ViewModel() {
+
+    private var token: String? = null
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading : LiveData<Boolean> = _isLoading
@@ -31,6 +40,15 @@ class StoryViewModel(
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage : LiveData<String> = _errorMessage
+
+    val stories: LiveData<PagingData<Story>> = Pager(
+        PagingConfig(
+            pageSize = 10,
+            enablePlaceholders = false,
+            maxSize = 100
+        ),
+        pagingSourceFactory = { AllStoriesPagingSource(storyCircleRepository, token.toString(), null) }
+    ).liveData.cachedIn(viewModelScope)
 
     fun postStory(token: String, description: String, photoFile: File, lat: Double?, lon: Double?) {
         _isLoading.postValue(true)
@@ -98,4 +116,7 @@ class StoryViewModel(
         }
     }
 
+    fun setToken(token: String) {
+        this.token = token
+    }
 }

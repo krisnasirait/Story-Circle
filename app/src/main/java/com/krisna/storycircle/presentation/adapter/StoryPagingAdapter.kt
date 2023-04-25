@@ -1,25 +1,22 @@
 package com.krisna.storycircle.presentation.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.krisna.storycircle.data.model.response.allstory.Story
 import com.krisna.storycircle.databinding.ItemStoryBinding
-import com.krisna.storycircle.presentation.viewmodel.StoryViewModel
 
-@Deprecated("not used anymore")
-class StoryAdapter(
+class StoryPagingAdapter(
     private val itemClicklistener: OnItemClickListener,
-) : RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
+) : PagingDataAdapter<Story, StoryPagingAdapter.StoryPagingViewHolder>(StoryDiffCallback()) {
 
-    private val storyList = mutableListOf<Story?>()
-
-    inner class StoryViewHolder(
+    inner class StoryPagingViewHolder(
         private val binding: ItemStoryBinding
-    ): RecyclerView.ViewHolder(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Story) {
             binding.apply {
                 tvName.text = item.name
@@ -34,8 +31,12 @@ class StoryAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
-        return StoryViewHolder(
+    override fun onBindViewHolder(holder: StoryPagingViewHolder, position: Int) {
+        getItem(position)?.let { holder.bind(it) }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryPagingViewHolder {
+        return StoryPagingViewHolder(
             ItemStoryBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -44,22 +45,17 @@ class StoryAdapter(
         )
     }
 
-    override fun getItemCount(): Int {
-        return storyList.size
-    }
-
-    override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
-        storyList[position]?.let { holder.bind(it) }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<Story?>) {
-        storyList.clear()
-        storyList.addAll(data)
-        notifyDataSetChanged()
-    }
-
     interface OnItemClickListener {
         fun onStoryClicked(id: String)
+    }
+}
+
+class StoryDiffCallback : DiffUtil.ItemCallback<Story>() {
+    override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Story, newItem: Story): Boolean {
+        return oldItem == newItem
     }
 }

@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StoryCircle"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCHoZBsMpNkUU7Rr6oAGlAyH2HpeJmS_Ho" />
         <activity
             android:name=".presentation.activity.DetailStoryActivity"
             android:exported="false" />

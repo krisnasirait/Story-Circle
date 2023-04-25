@@ -35,6 +35,8 @@ class HomeFragment : Fragment(), StoryPagingAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding = FragmentHomeBinding.bind(view)
+
         setupPagingRecyclerView()
         setupViewModelObservers()
         setupActionBar()
@@ -56,47 +58,25 @@ class HomeFragment : Fragment(), StoryPagingAdapter.OnItemClickListener {
         binding.rvStoryList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = storyPagingAdapter.withLoadStateFooter(
-                footer = LoadingStateAdapter {
-                    storyPagingAdapter.retry()
-                }
+                footer = LoadingStateAdapter { storyPagingAdapter.retry() }
             )
         }
     }
 
-    private fun setupViewModelObservers()  {
-        val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
-            .getString("bearerToken", "") ?: ""
-        storyViewModel.setToken(bearerToken)
-
-        storyViewModel.stories.observe(viewLifecycleOwner) { pagingData ->
-           storyPagingAdapter.submitData(lifecycle, pagingData)
-        }
-
-        storyPagingAdapter.addLoadStateListener { loadState ->
-            when (loadState.refresh) {
-                is LoadState.Loading -> {
-                    binding.swipeRefreshLayout.isRefreshing = true
-                }
-                is LoadState.NotLoading -> {
-                    binding.swipeRefreshLayout.isRefreshing = false
-                }
-                is LoadState.Error -> {
-                    binding.swipeRefreshLayout.isRefreshing = false
-                    Toast.makeText(requireContext(), "Error loading data", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
+    private fun setupViewModelObservers() {
         val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
             .getString("bearerToken", "") ?: ""
         storyViewModel.setToken(bearerToken)
 
         storyViewModel.stories.observe(viewLifecycleOwner) { pagingData ->
             storyPagingAdapter.submitData(lifecycle, pagingData)
+        }
+
+        storyPagingAdapter.addLoadStateListener { loadState ->
+            binding.swipeRefreshLayout.isRefreshing = loadState.refresh is LoadState.Loading
+            if (loadState.refresh is LoadState.Error) {
+                Toast.makeText(requireContext(), "Error loading data", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -112,5 +92,13 @@ class HomeFragment : Fragment(), StoryPagingAdapter.OnItemClickListener {
         }
         storyPagingAdapter.refresh()
         binding.rvStoryList.scrollToPosition(0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
+            .getString("bearerToken", "") ?: return
+        storyViewModel.setToken(bearerToken)
     }
 }

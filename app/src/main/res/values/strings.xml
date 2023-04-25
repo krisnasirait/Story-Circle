@@ -20,4 +20,5 @@
     <string name="enter_your_post_description">Enter your post Description</string>
     <string name="detail_name">Name :</string>
     <string name="detail_description">Description :</string>
+    <string name="retry">Coba lagi</string>
 </resources>

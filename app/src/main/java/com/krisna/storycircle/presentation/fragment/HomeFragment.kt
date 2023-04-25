@@ -13,6 +13,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krisna.storycircle.databinding.FragmentHomeBinding
 import com.krisna.storycircle.presentation.activity.DetailStoryActivity
+import com.krisna.storycircle.presentation.adapter.LoadingStateAdapter
 import com.krisna.storycircle.presentation.adapter.StoryAdapter
 import com.krisna.storycircle.presentation.adapter.StoryPagingAdapter
 import com.krisna.storycircle.presentation.viewmodel.StoryViewModel
@@ -56,7 +57,11 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener, StoryPagingAd
         storyPagingAdapter = StoryPagingAdapter(this)
         binding.rvStoryList.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = storyPagingAdapter
+            adapter = storyPagingAdapter.withLoadStateFooter(
+                footer = LoadingStateAdapter {
+                    storyPagingAdapter.retry()
+                }
+            )
         }
     }
 
@@ -85,17 +90,6 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener, StoryPagingAd
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
-            .getString("bearerToken", "") ?: ""
-
-        storyViewModel.setToken(bearerToken)
-        storyViewModel.stories.observe(viewLifecycleOwner) { pagingData ->
-            storyPagingAdapter.submitData(lifecycle, pagingData)
-        }
-    }
-
     override fun onStoryClicked(id: String) {
         val intent = Intent(activity, DetailStoryActivity::class.java)
         intent.putExtra("id", id)
@@ -103,6 +97,9 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener, StoryPagingAd
     }
 
     private fun refresh() {
+        storyViewModel.stories.observe(viewLifecycleOwner) { pagingData ->
+            storyPagingAdapter.submitData(lifecycle, pagingData)
+        }
         storyPagingAdapter.refresh()
         binding.rvStoryList.scrollToPosition(0)
     }

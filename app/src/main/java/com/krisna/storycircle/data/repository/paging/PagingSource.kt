@@ -23,10 +23,9 @@ class AllStoriesPagingSource(
             val response = storyCircleRepository.getAllStories(token, page, pageSize, location)
             if (response.isSuccessful) {
                 val stories = response.body()?.listStory ?: emptyList()
-                val sortedStories = stories.sortedByDescending { it.createdAt }
                 LoadResult.Page(
-                    data = sortedStories,
-                    prevKey = if (page == INITIAL_PAGE) null else page - 1,
+                    data = stories,
+                    prevKey = if (page == 1) null else page - 1,
                     nextKey = if (stories.isEmpty()) null else page + 1
                 )
             } else {
@@ -37,11 +36,11 @@ class AllStoriesPagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Story>): Int {
+    override fun getRefreshKey(state: PagingState<Int, Story>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
-        } ?: INITIAL_PAGE
+        }
     }
 
 }

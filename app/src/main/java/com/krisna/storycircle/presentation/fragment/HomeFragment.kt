@@ -14,16 +14,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.krisna.storycircle.databinding.FragmentHomeBinding
 import com.krisna.storycircle.presentation.activity.DetailStoryActivity
 import com.krisna.storycircle.presentation.adapter.LoadingStateAdapter
-import com.krisna.storycircle.presentation.adapter.StoryAdapter
 import com.krisna.storycircle.presentation.adapter.StoryPagingAdapter
 import com.krisna.storycircle.presentation.viewmodel.StoryViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener, StoryPagingAdapter.OnItemClickListener {
+class HomeFragment : Fragment(), StoryPagingAdapter.OnItemClickListener {
 
     private lateinit var binding: FragmentHomeBinding
     private val storyViewModel: StoryViewModel by viewModel()
-    private lateinit var storyAdapter: StoryAdapter
     private lateinit var storyPagingAdapter: StoryPagingAdapter
 
     override fun onCreateView(
@@ -87,6 +85,18 @@ class HomeFragment : Fragment(), StoryAdapter.OnItemClickListener, StoryPagingAd
                     Toast.makeText(requireContext(), "Error loading data", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
+            .getString("bearerToken", "") ?: ""
+        storyViewModel.setToken(bearerToken)
+
+        storyViewModel.stories.observe(viewLifecycleOwner) { pagingData ->
+            storyPagingAdapter.submitData(lifecycle, pagingData)
         }
     }
 

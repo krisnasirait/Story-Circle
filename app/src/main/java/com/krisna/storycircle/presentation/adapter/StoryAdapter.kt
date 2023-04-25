@@ -10,6 +10,7 @@ import com.krisna.storycircle.data.model.response.allstory.Story
 import com.krisna.storycircle.databinding.ItemStoryBinding
 import com.krisna.storycircle.presentation.viewmodel.StoryViewModel
 
+@Deprecated("not used anymore")
 class StoryAdapter(
     private val itemClicklistener: OnItemClickListener,
 ) : RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {

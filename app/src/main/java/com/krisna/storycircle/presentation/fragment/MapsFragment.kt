@@ -1,5 +1,6 @@
 package com.krisna.storycircle.presentation.fragment
 
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,14 +14,18 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.krisna.storycircle.R
 import com.krisna.storycircle.databinding.FragmentMapsBinding
+import com.krisna.storycircle.presentation.viewmodel.StoryViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MapsFragment : Fragment() {
 
     private lateinit var binding: FragmentMapsBinding
     private lateinit var mapView: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val storyViewModel: StoryViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,6 +65,24 @@ class MapsFragment : Fragment() {
                     mapView.animateCamera(
                         CameraUpdateFactory.newLatLngZoom(currentLocation, DEFAULT_ZOOM_LEVEL)
                     )
+                }
+            }
+
+            vmObserver()
+        }
+    }
+
+    private fun vmObserver() {
+        val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
+            .getString("bearerToken", "") ?: ""
+        storyViewModel.getAllStoryWithLoc(bearerToken, null, null, 1)
+        storyViewModel.listStory.observe(viewLifecycleOwner) { storyData ->
+            storyData?.forEach { story ->
+                story?.lat?.let { lat ->
+                    story.lon.let { lon ->
+                        val latLng = LatLng(lat, lon)
+                        mapView.addMarker(MarkerOptions().position(latLng).title(story.name))
+                    }
                 }
             }
         }

@@ -72,7 +72,7 @@ class StoryViewModel(
         }
     }
 
-    fun getAllStory(token: String, page: Int?, size: Int?, location: Int?) {
+    fun getAllStoryWithLoc(token: String, page: Int?, size: Int?, location: Int?) {
         _isLoading.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {

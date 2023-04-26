@@ -20,6 +20,11 @@
         android:name="com.krisna.storycircle.presentation.fragment.AccountFragment"
         android:label="Account"
         tools:layout="@layout/fragment_account" />
+    <fragment
+        android:id="@+id/menu_maps"
+        android:name="com.krisna.storycircle.presentation.fragment.MapsFragment"
+        android:label="Maps"
+        tools:layout="@layout/fragment_maps" />
 
 
 </navigation>

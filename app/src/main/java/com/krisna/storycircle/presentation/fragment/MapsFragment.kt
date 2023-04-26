@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -37,6 +38,7 @@ class MapsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupActionBar()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
@@ -72,6 +74,13 @@ class MapsFragment : Fragment() {
         }
     }
 
+    private fun setupActionBar() {
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            title = "Map"
+            setDisplayHomeAsUpEnabled(false)
+        }
+    }
+
     private fun vmObserver() {
         val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
             .getString("bearerToken", "") ?: ""
@@ -90,6 +99,6 @@ class MapsFragment : Fragment() {
 
     companion object {
         private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
-        private const val DEFAULT_ZOOM_LEVEL = 15f
+        private const val DEFAULT_ZOOM_LEVEL = 5f
     }
 }

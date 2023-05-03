@@ -1,7 +1,6 @@
 package com.krisna.storycircle.data.repository
 
 import android.content.Context
-import android.util.Log
 import com.krisna.storycircle.StoryCircleApp
 import com.krisna.storycircle.data.model.request.LoginUserRequestBody
 import com.krisna.storycircle.data.model.request.RegisterRequestBody

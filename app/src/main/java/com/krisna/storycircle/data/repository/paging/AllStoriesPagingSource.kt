@@ -1,5 +1,6 @@
 package com.krisna.storycircle.data.repository.paging
 
+import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.krisna.storycircle.data.model.response.allstory.Story

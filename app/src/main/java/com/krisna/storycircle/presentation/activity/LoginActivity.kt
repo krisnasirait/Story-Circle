@@ -52,7 +52,6 @@ class LoginActivity : AppCompatActivity() {
                 showLoginSuccess()
                 val bearerToken = loginUser.loginResult.token
                 val sharedPref = getSharedPreferences("credentials", Context.MODE_PRIVATE)
-                Log.d("auth", "setupObservers: $bearerToken")
                 with(sharedPref.edit()) {
                     putString("bearerToken", bearerToken)
                     apply()

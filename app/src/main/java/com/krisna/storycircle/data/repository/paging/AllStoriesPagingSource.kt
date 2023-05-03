@@ -1,6 +1,5 @@
 package com.krisna.storycircle.data.repository.paging
 
-import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.krisna.storycircle.data.model.response.allstory.Story
@@ -21,7 +20,7 @@ class AllStoriesPagingSource(
         val pageSize = params.loadSize
 
         return try {
-            val response = storyCircleRepository.getAllStories(token, page, pageSize, location)
+            val response = storyCircleRepository.getAllStories(page, pageSize, location)
             if (response.isSuccessful) {
                 val stories = response.body()?.listStory ?: emptyList()
                 LoadResult.Page(

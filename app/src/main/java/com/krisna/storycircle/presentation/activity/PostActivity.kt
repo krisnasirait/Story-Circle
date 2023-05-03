@@ -63,7 +63,7 @@ class PostActivity : AppCompatActivity() {
         val photoFile = photoFilePath?.let { File(it) }
 
         if (bearerToken.isNotEmpty() && photoFile != null && description.isNotEmpty()) {
-            storyViewModel.postStory(bearerToken, description, photoFile, lat, lon)
+            storyViewModel.postStory(description, photoFile, lat, lon)
         } else {
             Toast.makeText(this, "Description cannot be empty", Toast.LENGTH_SHORT).show()
         }

@@ -3,6 +3,7 @@ package com.krisna.storycircle.presentation.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,6 +67,8 @@ class HomeFragment : Fragment(), StoryPagingAdapter.OnItemClickListener {
     private fun setupViewModelObservers() {
         val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
             .getString("bearerToken", "") ?: ""
+
+        Log.d("auth", "Bearer Token in HomeFragment: $bearerToken")
         storyViewModel.setToken(bearerToken)
 
         storyViewModel.stories.observe(viewLifecycleOwner) { pagingData ->

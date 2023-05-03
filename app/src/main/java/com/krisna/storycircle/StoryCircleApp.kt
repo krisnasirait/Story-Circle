@@ -1,6 +1,8 @@
 package com.krisna.storycircle
 
+import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
 import com.krisna.storycircle.data.remote.ApiService
 import com.krisna.storycircle.data.remote.RetrofitClient
 import com.krisna.storycircle.data.repository.StoryCircleRepository
@@ -15,6 +17,8 @@ import org.koin.dsl.module
 class StoryCircleApp : Application() {
     override fun onCreate() {
         super.onCreate()
+
+        context = applicationContext
 
         startKoin {
             androidLogger()
@@ -31,6 +35,10 @@ class StoryCircleApp : Application() {
     private val repositoryModule = module {
         single { RetrofitClient.createService<ApiService>() }
         single { StoryCircleRepository(get()) }
+    }
+
+    companion object {
+        lateinit var context: Context
     }
 
 

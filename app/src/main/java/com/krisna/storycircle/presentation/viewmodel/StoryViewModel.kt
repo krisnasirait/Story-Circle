@@ -50,11 +50,11 @@ class StoryViewModel(
         pagingSourceFactory = { AllStoriesPagingSource(storyCircleRepository, token.toString(), null) }
     ).liveData.cachedIn(viewModelScope)
 
-    fun postStory(token: String, description: String, photoFile: File, lat: Double?, lon: Double?) {
+    fun postStory(description: String, photoFile: File, lat: Double?, lon: Double?) {
         _isLoading.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
-                val response = storyCircleRepository.addNewStory(token, description, photoFile, lat, lon)
+                val response = storyCircleRepository.addNewStory(description, photoFile, lat, lon)
                 response.body()
             }.onSuccess { story ->
                 withContext(Dispatchers.Main) {
@@ -72,11 +72,11 @@ class StoryViewModel(
         }
     }
 
-    fun getAllStoryWithLoc(token: String, page: Int?, size: Int?, location: Int?) {
+    fun getAllStoryWithLoc(page: Int?, size: Int?, location: Int?) {
         _isLoading.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
-                val response = storyCircleRepository.getAllStories(token, page, size, location)
+                val response = storyCircleRepository.getAllStories(page, size, location)
                 response.body()
             }.onSuccess { story ->
                 withContext(Dispatchers.Main) {
@@ -94,11 +94,11 @@ class StoryViewModel(
         }
     }
 
-    fun getStoryDetail(token: String, storyId: String) {
+    fun getStoryDetail(storyId: String) {
         _isLoading.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
-                val response = storyCircleRepository.getStoryDetail(token, storyId)
+                val response = storyCircleRepository.getStoryDetail(storyId)
                 response.body()
             }.onSuccess { story ->
                 withContext(Dispatchers.Main) {

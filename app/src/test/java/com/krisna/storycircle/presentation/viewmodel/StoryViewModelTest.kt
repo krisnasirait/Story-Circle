@@ -63,7 +63,7 @@ class StoryViewModelTest {
     }
 
     @Test
-    fun `when Get Story amount of data is matching as expected`() = runTest {
+    fun `when fetching Story amount of data is matching as expected`() = runTest {
         val dummyStory = DataDummy.generateDummyStoryResponse()
         val data: PagingData<Story> = StoriesPagingSource.snapshot(dummyStory)
         val expectedStory = MutableLiveData<PagingData<Story>>()
@@ -88,7 +88,7 @@ class StoryViewModelTest {
     }
 
     @Test
-    fun `when Get Story returns first data successfully`() = runTest {
+    fun `when fetching Story returns first data successfully`() = runTest {
         val dummyStory = DataDummy.generateDummyStoryResponse()
         val data: PagingData<Story> = StoriesPagingSource.snapshot(dummyStory)
         val expectedStory = MutableLiveData<PagingData<Story>>()
@@ -112,7 +112,7 @@ class StoryViewModelTest {
     }
 
     @Test
-    fun `when Get Story Should Return Zero If No Data`() = runTest {
+    fun `when fetching Story Should Return Zero If No Data`() = runTest {
         val dummyStory = emptyList<Story>()
         val data: PagingData<Story> = StoriesPagingSource.snapshot(dummyStory)
         val expectedStory = MutableLiveData<PagingData<Story>>()

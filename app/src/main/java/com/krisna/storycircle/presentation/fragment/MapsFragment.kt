@@ -100,7 +100,7 @@ class MapsFragment : Fragment() {
     private fun vmObserver() {
         val bearerToken = requireActivity().getSharedPreferences("credentials", Context.MODE_PRIVATE)
             .getString("bearerToken", "") ?: ""
-        storyViewModel.getAllStoryWithLoc(bearerToken, null, null, 1)
+        storyViewModel.getAllStoryWithLoc(null, null, 1)
         storyViewModel.listStory.observe(viewLifecycleOwner) { storyData ->
             storyData?.forEach { story ->
                 story?.lat?.let { lat ->

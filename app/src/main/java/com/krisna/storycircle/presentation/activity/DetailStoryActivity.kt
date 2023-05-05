@@ -43,7 +43,7 @@ class DetailStoryActivity : AppCompatActivity() {
             .getString("bearerToken", "") ?: ""
         val id = intent.getStringExtra("id") ?: ""
 
-        storyViewModel.getStoryDetail(bearerToken, id)
+        storyViewModel.getStoryDetail(id)
 
         storyViewModel.storyDetail.observe(this) { detailStory ->
             binding.tvName.text = detailStory?.story?.name

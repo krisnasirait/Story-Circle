@@ -20,7 +20,7 @@ class AllStoriesPagingSource(
         val pageSize = params.loadSize
 
         return try {
-            val response = storyCircleRepository.getAllStories(token, page, pageSize, location)
+            val response = storyCircleRepository.getAllStories(page, pageSize, location)
             if (response.isSuccessful) {
                 val stories = response.body()?.listStory ?: emptyList()
                 LoadResult.Page(

@@ -3,18 +3,13 @@ package com.krisna.storycircle.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.liveData
 import com.krisna.storycircle.data.model.response.addstory.AddNewStoryResponse
 import com.krisna.storycircle.data.model.response.allstory.Story
 import com.krisna.storycircle.data.model.response.detailstory.StoryDetailResponse
 import com.krisna.storycircle.data.repository.StoryCircleRepository
-import com.krisna.storycircle.data.repository.paging.AllStoriesPagingSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,28 +22,32 @@ class StoryViewModel(
     private var token: String? = null
 
     private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading : LiveData<Boolean> = _isLoading
+    val isLoading: LiveData<Boolean> = _isLoading
 
     private val _addStory = MutableLiveData<AddNewStoryResponse?>()
-    val addStory : LiveData<AddNewStoryResponse?> = _addStory
+    val addStory: LiveData<AddNewStoryResponse?> = _addStory
 
     private val _listStory = MutableLiveData<List<Story?>?>()
-    val listStory : LiveData<List<Story?>?> = _listStory
+    val listStory: LiveData<List<Story?>?> = _listStory
 
     private val _storyDetail = MutableLiveData<StoryDetailResponse?>()
-    val storyDetail : LiveData<StoryDetailResponse?> = _storyDetail
+    val storyDetail: LiveData<StoryDetailResponse?> = _storyDetail
 
     private val _errorMessage = MutableLiveData<String>()
-    val errorMessage : LiveData<String> = _errorMessage
+    val errorMessage: LiveData<String> = _errorMessage
 
-    val stories: LiveData<PagingData<Story>> = Pager(
-        PagingConfig(
-            pageSize = 10,
-            enablePlaceholders = false,
-            maxSize = 100
-        ),
-        pagingSourceFactory = { AllStoriesPagingSource(storyCircleRepository, token.toString(), null) }
-    ).liveData.cachedIn(viewModelScope)
+//    val stories: LiveData<PagingData<Story>> = Pager(
+//        PagingConfig(
+//            pageSize = 10,
+//            enablePlaceholders = false,
+//            maxSize = 100
+//        ),
+//        pagingSourceFactory = { AllStoriesPagingSource(storyCircleRepository, token.toString(), null) }
+//    ).liveData.cachedIn(viewModelScope)
+
+    fun getStoryPaging(): LiveData<PagingData<Story>> =
+        storyCircleRepository.getStoryPaging().cachedIn(viewModelScope)
+
 
     fun postStory(description: String, photoFile: File, lat: Double?, lon: Double?) {
         _isLoading.postValue(true)

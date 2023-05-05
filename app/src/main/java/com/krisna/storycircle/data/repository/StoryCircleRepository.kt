@@ -1,15 +1,22 @@
 package com.krisna.storycircle.data.repository
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.krisna.storycircle.StoryCircleApp
 import com.krisna.storycircle.data.model.request.LoginUserRequestBody
 import com.krisna.storycircle.data.model.request.RegisterRequestBody
 import com.krisna.storycircle.data.model.response.addstory.AddNewStoryResponse
 import com.krisna.storycircle.data.model.response.allstory.AllStoriesResponse
+import com.krisna.storycircle.data.model.response.allstory.Story
 import com.krisna.storycircle.data.model.response.detailstory.StoryDetailResponse
 import com.krisna.storycircle.data.model.response.login.LoginResponse
 import com.krisna.storycircle.data.model.response.register.RegisterResponse
 import com.krisna.storycircle.data.remote.ApiService
+import com.krisna.storycircle.data.repository.paging.AllStoriesPagingSource
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -54,6 +61,18 @@ class StoryCircleRepository(
 
     suspend fun getStoryDetail(storyId: String): Response<StoryDetailResponse> {
         return apiService.getStoryDetail(token, storyId)
+    }
+
+    fun getStoryPaging(): LiveData<PagingData<Story>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                AllStoriesPagingSource(apiService, null)
+            }
+        ).liveData
     }
 
 }

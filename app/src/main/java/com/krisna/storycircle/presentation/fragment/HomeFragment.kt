@@ -71,8 +71,8 @@ class HomeFragment : Fragment(), StoryPagingAdapter.OnItemClickListener {
         Log.d("auth", "Bearer Token in HomeFragment: $bearerToken")
         storyViewModel.setToken(bearerToken)
 
-        storyViewModel.stories.observe(viewLifecycleOwner) { pagingData ->
-            storyPagingAdapter.submitData(lifecycle, pagingData)
+        storyViewModel.getStoryPaging().observe(viewLifecycleOwner) {
+            storyPagingAdapter.submitData(lifecycle, it)
         }
 
         storyPagingAdapter.addLoadStateListener { loadState ->
@@ -90,8 +90,8 @@ class HomeFragment : Fragment(), StoryPagingAdapter.OnItemClickListener {
     }
 
     private fun refresh() {
-        storyViewModel.stories.observe(viewLifecycleOwner) { pagingData ->
-            storyPagingAdapter.submitData(lifecycle, pagingData)
+        storyViewModel.getStoryPaging().observe(viewLifecycleOwner) {
+            storyPagingAdapter.submitData(lifecycle, it)
         }
         storyPagingAdapter.refresh()
         binding.rvStoryList.scrollToPosition(0)
